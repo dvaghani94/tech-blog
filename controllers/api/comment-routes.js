@@ -17,4 +17,18 @@ router.post('/', withAuth, async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const commentData = await Comment.findAll({
+      include: [User],
+    });
+
+    const comments = commentData.map((post) => post.get({ plain: true }));
+
+    res.render('all-posts', { comments });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
