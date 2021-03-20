@@ -20,7 +20,7 @@ router.post("/", withAuth, async (req, res) => {
 
 router.get("/", (req, res) => {
   Post.findAll({
-    attributes: ["id", "title", "price", "content", "date"],
+    attributes: ["id", "body", "post_id", "user_id"],,
     include: [
       {
         model: User,
@@ -28,7 +28,7 @@ router.get("/", (req, res) => {
       },
       {
         model: Comment,
-        attributes: ["id", "text", "post_id", "user_id"],
+        attributes: ["id", "body", "post_id", "user_id"],
         include: {
           model: User,
           attributes: ["username"],
@@ -53,14 +53,14 @@ router.get("/:id", (req, res) => {
     where: {
       id: req.params.id,
     },
-    attributes: ["id", "title", "content" ],
+    attributes: ["id", "title", "body" ],
     include: [{
       model: User,
       attributes: ["username"],
     },
     {
       model: Comment,
-      attributes: ["id", "text", "post_id", "user_id"],
+      attributes: ["id", "body", "post_id", "user_id"],
       include: {
         model: User,
         attributes: ["username"],
