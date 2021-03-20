@@ -1,8 +1,8 @@
-const router = require('express').Router();
-const { Post } = require('../../models/');
-const withAuth = require('../../utils/auth');
+const router = require("express").Router();
+const { Post, User } = require("../../models/");
+const withAuth = require("../../utils/auth");
 
-router.post('/', withAuth, async (req, res) => {
+router.post("/", withAuth, async (req, res) => {
   const body = req.body;
 
   try {
@@ -11,7 +11,6 @@ router.post('/', withAuth, async (req, res) => {
       ...req.body,
       // TODO: SET USERID TO LOGGEDIN USERID
       user_id: req.session.user_id,
-
     });
     res.json(newPost);
   } catch (err) {
@@ -19,13 +18,75 @@ router.post('/', withAuth, async (req, res) => {
   }
 });
 
-router.put('/:id', withAuth, async (req, res) => {
+router.get("/", (req, res) => {
+  Post.findAll({
+    attributes: ["id", "title", "price", "content", "date"],
+    include: [
+      {
+        model: User,
+        attributes: ["username"],
+      },
+      {
+        model: Comment,
+        attributes: ["id", "text", "post_id", "user_id"],
+        include: {
+          model: User,
+          attributes: ["username"],
+        },
+      },
+    ],
+  })
+    .then((productData) => {
+      if (!productData) {
+        res.status(404).json({ message: "No post found with that id!" });
+        return;
+      }
+      res.json(productData);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+});
+
+router.get("/:id", (req, res) => {
+  Post.findOne({
+    where: {
+      id: req.params.id,
+    },
+    attributes: ["id", "title", "content" ],
+    include: [{
+      model: User,
+      attributes: ["username"],
+    },
+    {
+      model: Comment,
+      attributes: ["id", "text", "post_id", "user_id"],
+      include: {
+        model: User,
+        attributes: ["username"],
+      },
+    },
+  ],
+  })
+    .then((postData) => {
+      if (!postData) {
+        res.status(404).json({ message: "No post found with that id!" });
+        return;
+      }
+      res.json(postData);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+});
+
+router.put("/:id", withAuth, async (req, res) => {
   try {
     const [affectedRows] = await Post.update(req.body, {
       // TODO: SET ID TO ID PARAMETER INSIDE WHERE CLAUSE CONDITION FIELD
       where: {
         id: req.params.id,
-        user_id: req.sessions.user_id
+        user_id: req.sessions.user_id,
       },
     });
 
@@ -39,13 +100,13 @@ router.put('/:id', withAuth, async (req, res) => {
   }
 });
 
-router.delete('/:id', withAuth, async (req, res) => {
+router.delete("/:id", withAuth, async (req, res) => {
   try {
     const [affectedRows] = Post.destroy({
       // TODO: SET ID TO ID PARAMETER INSIDE WHERE CLAUSE CONDITION FIELD
       where: {
         id: req.params.id,
-        user_id: req.sessions.user_id
+        user_id: req.sessions.user_id,
       },
     });
 
