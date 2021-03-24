@@ -20,7 +20,7 @@ router.post("/", withAuth, async (req, res) => {
 
 router.get("/", (req, res) => {
   Post.findAll({
-    attributes: ["id", "body", "post_id", "user_id"],,
+    attributes: ["id", "body", "post_id", "user_id"],
     include: [
       {
         model: User,

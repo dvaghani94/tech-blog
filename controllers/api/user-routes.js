@@ -26,13 +26,13 @@ router.post("/", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const user = await User.findOne({
+    const newUser = await User.findOne({
       where: {
         username: req.body.username,
       },
     });
 
-    if (!user) {
+    if (!newUser) {
       res.status(400).json({ message: "No user account found!" });
       return;
     }
@@ -69,7 +69,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   User.findOne({
     where: {
-      id: req.params.id,
+      id: req.params.user_id,
     },
     attributes: { exclude: ["password"] },
     include: [
@@ -91,12 +91,12 @@ router.get("/:id", (req, res) => {
       },
     ],
   })
-    .then((postData) => {
-      if (!postData) {
+    .then((newUser) => {
+      if (!newUser) {
         res.status(404).json({ message: "No user found with that id!" });
         return;
       }
-      res.json(postData);
+      res.json(newUser);
     })
     .catch((err) => {
       res.status(500).json(err);
@@ -119,12 +119,12 @@ router.delete('/:id', (req, res) => {
         id: req.params.id,
       },
     })
-    .then(userData => {
-      if (!userData) {
+    .then(newUser => {
+      if (!newUser) {
         res.status(404).json({ message: 'No user found with that id!'});
         return;
     }
-    res.json(userData);
+    res.json(newUser);
   })
     .catch (err => {
     res.status(500).json(err);
