@@ -1,4 +1,5 @@
 const { Sequelize, Model, DataTypes, DATE } = require("sequelize");
+const { all } = require("sequelize/types/lib/operators");
 const sequelize = require("../config/config");
 
 // TODO: YOUR CODE HERE
@@ -12,14 +13,15 @@ Post.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    body: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    date: {
-        type: DataTypes.DATE
+    content: {
+        type: DataTypes.DATE,
+        allowNull: false
     },
-    user_id: {
+    userId: {
       type: DataTypes.INTEGER,
       references: {
         model: "user",

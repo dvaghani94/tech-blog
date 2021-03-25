@@ -8,13 +8,18 @@ Comment.init(
   {
     id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       primaryKey: true,
       autoIncrement: true,
     },
     body: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [1]
+      }
     },
-    user_id: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -22,7 +27,7 @@ Comment.init(
         key: "id",
       },
     },
-    post_id: {
+    postId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

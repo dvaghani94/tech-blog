@@ -12,11 +12,11 @@ router.post("/", async (req, res) => {
 
     req.session.save(() => {
       // TODO: SET USERID IN REQUEST SESSION TO ID RETURNED FROM DATABASE
-      req.session.user_id = newUser.id;
+      req.session.userId = newUser.id;
       // TODO: SET USERNAME IN REQUEST SESSION TO USERNAME RETURNED FROM DATABASE
       req.session.username = newUser.username;
       // TODO: SET LOGGEDIN TO TRUE IN REQUEST SESSION
-      req.session.logged_in = true;
+      req.session.loggedIn = true;
       res.json(newUser);
     });
   } catch (err) {
@@ -46,18 +46,34 @@ router.post("/login", async (req, res) => {
 
     req.session.save(() => {
       // TODO: SET USERID IN REQUEST SESSION TO ID RETURNED FROM DATABASE
-      req.session.user_id = user.id;
+      req.session.userId = user.id;
       // TODO: SET USERNAME IN REQUEST SESSION TO USERNAME RETURNED FROM DATABASE
       req.session.username = user.username;
       // TODO: SET LOGGEDIN TO TRUE IN REQUEST SESSION
-      req.session.logged_in = true;
+      req.session.loggedIn = true;
       res.json({ user, message: "You are now logged in!" });
     });
   } catch (err) {
     res.status(400).json({ message: "No user account found!" });
   }
 });
+// router.post('/post', async (req, res) => {
+//   try {
+//     const newUser = await User.create({
+//       username: req.body.username,
+//       password: req.body.password,
+//     });
 
+//     req.session.save(() => {
+//       req.session.userId = newUser.id;
+//       req.session.username = newUser.username;
+//       req.session.loggedIn = true;
+//       res.json(newUser);
+//     });
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// });
 router.get("/", (req, res) => {
   User.findAll({
     attributes: { exclude: ["password"] },
@@ -69,27 +85,8 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   User.findOne({
     where: {
-      id: req.params.user_id,
+      id: req.params.id,
     },
-    attributes: { exclude: ["password"] },
-    include: [
-      {
-        model: Post,
-        attributes: ["id", "title", "body", "date"],
-      },
-      {
-        model: Comment,
-        attributes: ["id", "body"],
-        include: {
-          model: Post,
-          attributes: ["title"],
-        },
-      },
-      {
-        model: Post,
-        attributes: ["title"],
-      },
-    ],
   })
     .then((newUser) => {
       if (!newUser) {
