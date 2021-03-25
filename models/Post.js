@@ -17,7 +17,7 @@ Post.init(
     //   allowNull: false,
     // },
     // content: {
-    //     type: DataTypes.DATE,
+    //     type: DataTypes.STRING,
     //     allowNull: false
     // },
     userId: {

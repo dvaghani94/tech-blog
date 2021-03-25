@@ -8,11 +8,19 @@ router.post("/", withAuth, async (req, res) => {
   try {
     const newPost = await Post.create({
       // TODO: POST BODY SENT IN REQUEST. HINT USING SPREAD
-      ...req.body,
+      title: req.body.title,
+      content: req.body.content,
       // TODO: SET USERID TO LOGGEDIN USERID
       userId: req.session.userId,
     });
+
+    req.session.save(() => {
+      req.session.title = req.body.title;
+      req.session.content = req.body.content;
+      req.session.loggedIn = true;
     res.json(newPost);
+    });
+
   } catch (err) {
     res.status(500).json(err);
   }
@@ -36,12 +44,12 @@ router.get("/", (req, res) => {
       },
     ],
   })
-    .then((productData) => {
-      if (!productData) {
+    .then((newPost) => {
+      if (!newPost) {
         res.status(404).json({ message: "No post found with that id!" });
         return;
       }
-      res.json(productData);
+      res.json(newPost);
     })
     .catch((err) => {
       res.status(500).json(err);
@@ -68,12 +76,20 @@ router.get("/:id", (req, res) => {
       },
     ],
   })
-    .then((postData) => {
-      if (!postData) {
+    .then((newPost) => {
+      if (!newPost) {
         res.status(404).json({ message: "No post found with that id!" });
         return;
       }
-      res.json(postData);
+
+      const postData = newPost({ plain: true });
+
+      res.render('single-post', {
+        postData,
+        loggedIn: req.session.loggedIn
+
+        // res.json(newPost);
+      })
     })
     .catch((err) => {
       res.status(500).json(err);
@@ -83,7 +99,6 @@ router.get("/:id", (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const newPost = await Post.create({
-      user_id: req.session.user_id,
       title: req.body.title,
       content: req.body.content
     });
