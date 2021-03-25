@@ -20,11 +20,11 @@ router.post("/", withAuth, async (req, res) => {
 
 router.get("/", (req, res) => {
   Post.findAll({
-    attributes: ["id", "title", "content"],
+    attributes: ["id"],
     include: [
       {
         model: Comment,
-        attributes: ["id", "title", "body", "postId", "userId"],
+        attributes: ["id", "body", "postId", "userId"],
         include: {
           model: User,
           attributes: ["username"]
@@ -53,10 +53,10 @@ router.get("/:id", (req, res) => {
     where: {
       id: req.params.id,
     },
-    attributes: ["id", "title", "content" ],
+    attributes: ["id" ],
     include: [{
       model: Comment,
-      attributes: ["id", "title", "body", "postId", "userId"],
+      attributes: ["id", "body", "postId", "userId"],
       include: {
         model: User,
         attributes: ["username"],
@@ -80,7 +80,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const newPost = await Post.create({
       user_id: req.session.user_id,
