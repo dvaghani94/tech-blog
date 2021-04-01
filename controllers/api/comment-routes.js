@@ -7,7 +7,8 @@ router.post('/', withAuth, async (req, res) => {
   try {
     const newComment = await Comment.create({
       // TODO: COMMENT BODY IN REQUEST USING SPREAD
-      ...req.body,
+      title: req.body.title,
+      content: req.body.content,
       // TODO: SET USERID TO SESSION LOGGEDIN USERID
       userId: req.session.userId
     });
@@ -71,4 +72,4 @@ router.post('/', withAuth, async (req, res) => {
 
 // });
 
-// module.exports = router;
+module.exports = router;
