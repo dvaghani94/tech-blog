@@ -16,7 +16,7 @@ router.post("/", withAuth, async (req, res) => {
 
     req.session.save(() => {
       req.session.title = req.body.title;
-      req.session.content = req.body.content;
+      req.session.content = req.body;
       req.session.loggedIn = true;
     res.json(newPost);
     });
@@ -26,87 +26,87 @@ router.post("/", withAuth, async (req, res) => {
   }
 });
 
-router.get("/", (req, res) => {
-  Post.findAll({
-    attributes: ["id"],
-    include: [
-      {
-        model: Comment,
-        attributes: ["id", "body", "postId", "userId"],
-        include: {
-          model: User,
-          attributes: ["username"]
-        }
-      },
-      {
-        model: User,
-        attributes: ["username"],
-      },
-    ],
-  })
-    .then((newPost) => {
-      if (!newPost) {
-        res.status(404).json({ message: "No post found with that id!" });
-        return;
-      }
-      res.json(newPost);
-    })
-    .catch((err) => {
-      res.status(500).json(err);
-    });
-});
+// router.get("/", (req, res) => {
+//   Post.findAll({
+//     attributes: ["id"],
+//     include: [
+//       {
+//         model: Comment,
+//         attributes: ["id", "body", "postId", "userId"],
+//         include: {
+//           model: User,
+//           attributes: ["username"]
+//         }
+//       },
+//       {
+//         model: User,
+//         attributes: ["username"],
+//       },
+//     ],
+//   })
+//     .then((newPost) => {
+//       if (!newPost) {
+//         res.status(404).json({ message: "No post found with that id!" });
+//         return;
+//       }
+//       res.json(newPost);
+//     })
+//     .catch((err) => {
+//       res.status(500).json(err);
+//     });
+// });
 
-router.get("/:id", (req, res) => {
-  Post.findOne({
-    where: {
-      id: req.params.id,
-    },
-    attributes: ["id" ],
-    include: [{
-      model: Comment,
-      attributes: ["id", "body", "postId", "userId"],
-      include: {
-        model: User,
-        attributes: ["username"],
-      },
-    },
-    {
-        model: User,
-        attributes: ["username"],
-      },
-    ],
-  })
-    .then((newPost) => {
-      if (!newPost) {
-        res.status(404).json({ message: "No post found with that id!" });
-        return;
-      }
+// router.get("/:id", (req, res) => {
+//   Post.findOne({
+//     where: {
+//       id: req.params.id,
+//     },
+//     attributes: ["id" ],
+//     include: [{
+//       model: Comment,
+//       attributes: ["id", "body", "postId", "userId"],
+//       include: {
+//         model: User,
+//         attributes: ["username"],
+//       },
+//     },
+//     {
+//         model: User,
+//         attributes: ["username"],
+//       },
+//     ],
+//   })
+//     .then((newPost) => {
+//       if (!newPost) {
+//         res.status(404).json({ message: "No post found with that id!" });
+//         return;
+//       }
 
-      const postData = newPost({ plain: true });
+//       const postData = newPost({ plain: true });
 
-      res.render('single-post', {
-        postData,
-        loggedIn: req.session.loggedIn
+//       res.render('single-post', {
+//         postData,
+//         loggedIn: req.session.loggedIn
 
-        // res.json(newPost);
-      })
-    })
-    .catch((err) => {
-      res.status(500).json(err);
-    });
-});
+//         // res.json(newPost);
+//       })
+//     })
+//     .catch((err) => {
+//       res.status(500).json(err);
+//     });
+// });
 
-router.post('/', async (req, res) => {
-  try {
-    const newPost = await Post.create({
-      title: req.body.title,
-      content: req.body.content
-    });
-    res.json(newPost);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-})
+// router.post('/', async (req, res) => {
+//   try {
+//     const newPost = await Post.create({
+//       title: req.body.title,
+//       content: req.body.content
+//     });
+//     res.json(newPost);
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// })
 
 router.put("/:id", withAuth, async (req, res) => {
   try {
@@ -125,7 +125,7 @@ router.put("/:id", withAuth, async (req, res) => {
 
     req.session.save(() => {
       req.session.title = req.body.title;
-      req.session.content = req.body.content;
+      req.session.content = req.body;
       req.session.updatePost = true;
       res.json(affectedRows);
     });
