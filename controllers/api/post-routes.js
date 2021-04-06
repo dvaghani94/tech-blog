@@ -9,14 +9,14 @@ router.post("/", withAuth, async (req, res) => {
     const newPost = await Post.create({
       // TODO: POST BODY SENT IN REQUEST. HINT USING SPREAD
       title: req.body.title,
-      content: req.body,
+      body: req.body,
       // TODO: SET USERID TO LOGGEDIN USERID
       userId: req.session.userId,
     });
 
     req.session.save(() => {
       req.session.title = req.body.title;
-      req.session.content = req.body;
+      req.session.body = req.body;
       req.session.loggedIn = true;
     res.json(newPost);
     });
@@ -108,29 +108,46 @@ router.post("/", withAuth, async (req, res) => {
 //   }
 // })
 
-router.put("/:id", withAuth, async (req, res) => {
+// router.put("/:id", withAuth, async (req, res) => {
+//   try {
+//     const [affectedRows] = await Post.update(req.body, {
+//       // TODO: SET ID TO ID PARAMETER INSIDE WHERE CLAUSE CONDITION FIELD
+//       where: {
+//         id: req.params.id,
+//       },
+//     });
+
+//     if (affectedRows > 0) {
+//       res.status(200).end();
+//     } else {
+//       res.status(404).end();
+//     }
+
+//     req.session.save(() => {
+//       req.session.title = req.body.title;
+//       req.session.content = req.body;
+//       req.session.updatePost = true;
+//       res.json(affectedRows);
+//     });
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// });
+router.put('/:id', withAuth, async (req, res) => {
   try {
     const [affectedRows] = await Post.update(req.body, {
-      // TODO: SET ID TO ID PARAMETER INSIDE WHERE CLAUSE CONDITION FIELD
       where: {
-        id: req.params.id,
+        id: req.params.id
       },
     });
-
     if (affectedRows > 0) {
-      res.status(200).end();
-    } else {
+      res.status(200).end()
+    }else {
       res.status(404).end();
-    }
-
-    req.session.save(() => {
-      req.session.title = req.body.title;
-      req.session.content = req.body;
-      req.session.updatePost = true;
-      res.json(affectedRows);
-    });
-  } catch (err) {
-    res.status(500).json(err);
+    } 
+  }
+  catch (err){
+    res.status(500).json(err)
   }
 });
 
