@@ -17,10 +17,10 @@ Post.init(
       // allowNull: false,
   
     },
-    // body: {
-    //     type: DataTypes.STRING,
-    //     // allowNull: false
-    // },
+    body: {
+        type: DataTypes.STRING,
+        // allowNull: false
+    },
     // userId: {
     //   type: DataTypes.INTEGER,
     //   references: {
@@ -38,20 +38,4 @@ Post.init(
 );
 
 module.exports = Post;
-// 
-// const { Sequelize, Model, DataTypes } = require('sequelize');
-// const sequelize = require('../config/config');
 
-// class Post extends Model {}
-
-// Post.init(
-//   {
-//     title: DataTypes.STRING,
-//     body: DataTypes.STRING
-//   },
-//   {
-//     sequelize
-//   }
-// );
-
-// module.exports = Post;
